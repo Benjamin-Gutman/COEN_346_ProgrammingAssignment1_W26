@@ -1,3 +1,5 @@
+package PA1;
+
 /*
  * The Levenshtein distance is a number that tells you how different two strings are. The higher the number, the more different the two strings are.
  * For more information: https://en.wikipedia.org/wiki/Levenshtein_distance

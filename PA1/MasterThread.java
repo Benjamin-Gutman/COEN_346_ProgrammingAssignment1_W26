@@ -1,3 +1,5 @@
+package PA1;
+
 import java.io.*;
 import java.util.*;
 import java.lang.Thread;
@@ -34,9 +36,11 @@ public class MasterThread extends Thread {
 
         while (index < lines.size()) {
 
-            List<WorkerThread> workers = new ArrayList<>(); // List to hold worker threads for the current batch
+            Worker[] workers = new Worker[worker_number]; // List to hold worker threads for the current batch
             // Worker Thread code to run the Levenshtein Algorithm on the current batch of lines:
-
+            for (int i = 0; i < worker_number; i++ ) {
+            	workers[i] = new Worker(lines[i], vulnerabilityPattern, this);
+            }
 
 
 
