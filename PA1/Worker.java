@@ -2,6 +2,7 @@ package PA1;
 
 class semaphoreDefinition{
 	public static Semaphore increment = new Semaphore(1);
+	public static Semaphore signalMaster = new Semaphore(1);
 }
 
 public class Worker extends Thread{
@@ -44,6 +45,7 @@ public class Worker extends Thread{
 			master.incrementCount();
 			semaphoreDefinition.increment.V(); // This releases the key
 		}
+		semaphoreDefinition.signalMaster.V();
 		
 	}
 }

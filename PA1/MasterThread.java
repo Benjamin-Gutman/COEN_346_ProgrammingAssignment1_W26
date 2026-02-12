@@ -40,11 +40,18 @@ public class MasterThread extends Thread {
             // Worker Thread code to run the Levenshtein Algorithm on the current batch of lines:
             for (int i = 0; i < worker_number; i++ ) {
             	workers[i] = new Worker(lines[i], vulnerabilityPattern, this);
+            	workers[i].start();
             }
-
-
+            
+            for (int i = 0; i < worker_number; i++ ) {
+            	workers[i].join();
+            }
+            semaphoreDefinition.signalMaster.Subtract(2);
+            semaphoreDefinition.signalMaster.P();
 
             // Update averages, we need to increment workers by 2 when approx_Avg - Avg > 0.2
+            index = index + worker_number;
+
             approximate_avg = (double) Count / lines.size();
 
             if (Math.abs(approximate_avg - Avg) > 0.2) {

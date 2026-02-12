@@ -25,4 +25,15 @@ public class Semaphore{
 		++value;
 		notify();
 	}
+	
+	public synchronized void Subtract(int count) {
+		while (value <= 0 ) {
+			try {
+				wait(); // There is no waiting buffer since critical section is small (1 line java, 3 lines assembly)
+			} catch (InterruptedException e) {
+		 	}
+		}
+		value = value - count;
+	}
+	
 }
