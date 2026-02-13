@@ -32,42 +32,48 @@ public class MasterThread extends Thread {
     // (thats because the built-in thread class already has a run method, so we need to override it to implement our own functionality)
     @Override
     public void run() {
-        int index = 0;
+    	try {
+    		int index = 0;
 
-        while (index < lines.size()) {
+    		while (index < lines.size()) {
 
-            Worker[] workers = new Worker[worker_number]; // List to hold worker threads for the current batch
-            // Worker Thread code to run the Levenshtein Algorithm on the current batch of lines:
-            for (int i = 0; i < worker_number; i++ ) {
-            	workers[i] = new Worker(lines[i], vulnerabilityPattern, this);
-            	workers[i].start();
-            }
+    			Worker[] workers = new Worker[worker_number]; // List to hold worker threads for the current batch
+    			// Worker Thread code to run the Levenshtein Algorithm on the current batch of lines:
+    			for (int i = 0; i < worker_number; i++ ) {
+    				workers[i] = new Worker(lines.get(i),vulnerabilityPattern, this);
+    				workers[i].start();
+    			}
             
-            for (int i = 0; i < worker_number; i++ ) {
-            	workers[i].join();
-            }
-            semaphoreDefinition.signalMaster.Subtract(2);
-            semaphoreDefinition.signalMaster.P();
+    			for (int i = 0; i < worker_number; i++ ) {
+    				workers[i].join();
+    			}
+    			semaphoreDefinition.signalMaster.Subtract(2);
+    			semaphoreDefinition.signalMaster.P();
 
-            // Update averages, we need to increment workers by 2 when approx_Avg - Avg > 0.2
-            index = index + worker_number;
+    			// Update averages, we need to increment workers by 2 when approx_Avg - Avg > 0.2
+    			index = index + worker_number;
+    			//System.out.println("Detected vulnerabilities: " + Count);
+    			approximate_avg = (double) Count / lines.size();
 
-            approximate_avg = (double) Count / lines.size();
+    			if (Math.abs(approximate_avg - Avg) > 0.2) {
+    				try {
+    					Thread.sleep(2000);
+    				} catch (InterruptedException ignored) {}
+    				
+    				Avg = approximate_avg;
+    				worker_number += 2;
 
-            if (Math.abs(approximate_avg - Avg) > 0.2) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {}
-
-                Avg = approximate_avg;
-                worker_number += 2;
-
-                System.out.println("Increasing workers to: " + worker_number);
-            }
+    				System.out.println("Increasing workers to: " + worker_number);
+    		}
         }
+    	} 
+    		catch (InterruptedException e) {
+        	e.printStackTrace();
+        }
+        
         // print the count
         System.out.println("Detected vulnerabilities: " + Count);
-    }
+}
 
     // synchronized as required
     public synchronized void incrementCount() {

@@ -34,7 +34,11 @@ public class LevenshteinDistance {
     // The main function to run the Levenshtein Distance algorithm
     public int Calculate(String str1, String str2)
     {
-        int[][] dp = new int[str1.length() + 1][str1.length() + 1];
+
+        int[][] dp = new int[str1.length() + 1][str2.length() + 1];
+
+        System.out.println(str1.length());
+        System.out.println(str2.length());
 
         for (int i = 0; i <= str1.length(); i++) {
             for (int j = 0; j <= str2.length(); j++) {

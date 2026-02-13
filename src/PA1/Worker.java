@@ -10,7 +10,7 @@ public class Worker extends Thread{
 	private String log;
 	private String vulnerabilityPattern;
 	private MasterThread master;
-	private static LevenshteinDistance lev = new LevenshteinDistance();
+	private LevenshteinDistance lev = new LevenshteinDistance();
 	
 	public Worker() {
 		log = null;
@@ -18,34 +18,35 @@ public class Worker extends Thread{
 		master = null;
 	}
 	
-	public Worker(String log, String vulnerabilityPattern, MasterThread master) {
+	public Worker(String log,String vulnerabilityPattern, MasterThread master) {
 		this.log = log;
 		this.vulnerabilityPattern = vulnerabilityPattern;
 		this.master = master;
 	}
 	
 	
-	public static boolean checkVulnerability(String log, int startIndex) {
-		if (startIndex+vulnerabilityPattern.length()-1 >= log.length()) {
-			return false;
+	public boolean checkVulnerability(String log) throws InterruptedException {
+		for (int i = 0; i < log.length(); i++) {
+			lev.Calculate(log.substring(i, i+vulnerabilityPattern.length()), vulnerabilityPattern);
+			
+			if (lev.acceptable_change) {
+				return true;
+			}
 		}
-		lev.calculate(log.substring(startIndex, startIndex+vulnerabilityPattern.length()-1), vulnerabilityPattern);
-		if (!lev.isAcceptable_change()) {
-			return(checkVulnerability(log, startIndex+1));
-		}
-		else {
-			return true;
-		}
+		return false;
 	}
 	
 	public void run() {
-		boolean vulnerable = checkVulnerability(log, 0 );
+		try {
+		boolean vulnerable = checkVulnerability(log);
 		if(vulnerable) {
 			semaphoreDefinition.increment.P(); //This waits for the key to enter critical section
 			master.incrementCount();
 			semaphoreDefinition.increment.V(); // This releases the key
 		}
 		semaphoreDefinition.signalMaster.V();
-		
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		};
 	}
 }
