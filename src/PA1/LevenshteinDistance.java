@@ -22,7 +22,7 @@ public class LevenshteinDistance {
         this.Change_Ratio = 1- Double.valueOf(i)/Double.valueOf(length);
         // if the change ratio is greater than 5% (assignment requirements),
         // then it is acceptable change to increment the number of Vulnerabilities.
-        this.acceptable_change = (this.Change_Ratio > 0.05)? true: false;
+        this.acceptable_change = (this.Change_Ratio >= 0.95)? true: false;
     }
 
     // If the characters are not equal, then the cost of distance by one.
@@ -36,9 +36,6 @@ public class LevenshteinDistance {
     {
 
         int[][] dp = new int[str1.length() + 1][str2.length() + 1];
-
-        System.out.println(str1.length());
-        System.out.println(str2.length());
 
         for (int i = 0; i <= str1.length(); i++) {
             for (int j = 0; j <= str2.length(); j++) {

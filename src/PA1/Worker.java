@@ -26,7 +26,7 @@ public class Worker extends Thread{
 	
 	
 	public boolean checkVulnerability(String log) throws InterruptedException {
-		for (int i = 0; i < log.length(); i++) {
+		for (int i = 0; i+vulnerabilityPattern.length() < log.length(); i++) {
 			lev.Calculate(log.substring(i, i+vulnerabilityPattern.length()), vulnerabilityPattern);
 			
 			if (lev.acceptable_change) {
@@ -43,6 +43,7 @@ public class Worker extends Thread{
 			semaphoreDefinition.increment.P(); //This waits for the key to enter critical section
 			master.incrementCount();
 			semaphoreDefinition.increment.V(); // This releases the key
+
 		}
 		semaphoreDefinition.signalMaster.V();
 		} catch (InterruptedException e) {

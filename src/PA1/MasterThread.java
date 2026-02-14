@@ -11,7 +11,7 @@ public class MasterThread extends Thread {
 
     // Initial conditions given by Dr. Goodarzi
     private int worker_number = 2;
-    private int Count = 0;
+    public int Count = 0;
     private double Avg = 0;
     private double approximate_avg = 0;
 
@@ -39,13 +39,27 @@ public class MasterThread extends Thread {
 
     			Worker[] workers = new Worker[worker_number]; // List to hold worker threads for the current batch
     			// Worker Thread code to run the Levenshtein Algorithm on the current batch of lines:
-    			for (int i = 0; i < worker_number; i++ ) {
-    				workers[i] = new Worker(lines.get(i),vulnerabilityPattern, this);
-    				workers[i].start();
+    			if (index+worker_number >= lines.size()) {
+    				for (int i = 0; i < lines.size()-index; i++) {
+    					workers[i] = new Worker(lines.get(i+index),vulnerabilityPattern, this);
+        				//System.out.println(lines.get(i));
+        				workers[i].start();
+    				}
+    				for (int i = 0; i < lines.size()-index; i++ ) {
+        				workers[i].join();
+        			}
     			}
-            
-    			for (int i = 0; i < worker_number; i++ ) {
-    				workers[i].join();
+    			else {
+    				for (int i = 0; i < worker_number; i++ ) {
+    					workers[i] = new Worker(lines.get(i+index),vulnerabilityPattern, this);
+    					//System.out.println(lines.get(i));
+    					workers[i].start();
+    					
+    				}
+    				
+    				for (int i = 0; i < worker_number; i++ ) {
+        				workers[i].join();
+        			}
     			}
     			semaphoreDefinition.signalMaster.Subtract(2);
     			semaphoreDefinition.signalMaster.P();
@@ -65,7 +79,9 @@ public class MasterThread extends Thread {
 
     				System.out.println("Increasing workers to: " + worker_number);
     		}
+    			semaphoreDefinition.signalMaster.V();
         }
+    		
     	} 
     		catch (InterruptedException e) {
         	e.printStackTrace();
@@ -77,6 +93,6 @@ public class MasterThread extends Thread {
 
     // synchronized as required
     public synchronized void incrementCount() {
-        Count = Count++;
+        Count++;
     }
 }
