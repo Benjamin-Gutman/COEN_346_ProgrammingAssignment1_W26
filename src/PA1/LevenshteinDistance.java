@@ -22,6 +22,8 @@ public class LevenshteinDistance {
         this.Change_Ratio = 1- Double.valueOf(i)/Double.valueOf(length);
         // if the change ratio is greater than 5% (assignment requirements),
         // then it is acceptable change to increment the number of Vulnerabilities.
+        
+        //****This line was changed from >0.05 to >=0.95******
         this.acceptable_change = (this.Change_Ratio >= 0.95)? true: false;
     }
 

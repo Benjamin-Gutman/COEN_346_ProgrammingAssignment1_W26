@@ -1,6 +1,6 @@
 package PA1;
 
-//This code was taken from the Semaphore example shown in the tutorial slides and executed in Lab2
+//This code was taken from the Semaphore example shown in the tutorial 4 slides and executed in Lab2
 
 public class Semaphore{
 	private int value;
@@ -26,6 +26,9 @@ public class Semaphore{
 		notify();
 	}
 	
+	
+	//This is a personal addition to the class, this is to reduce the semaphore by a large amount so that
+	//a number of processes may complete before another is ok to continue. 
 	public synchronized void Subtract(int count) {
 		while (value <= 0 ) {
 			try {

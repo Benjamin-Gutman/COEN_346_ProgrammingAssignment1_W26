@@ -39,6 +39,8 @@ public class MasterThread extends Thread {
 
     			Worker[] workers = new Worker[worker_number]; // List to hold worker threads for the current batch
     			// Worker Thread code to run the Levenshtein Algorithm on the current batch of lines:
+    			
+    			//First if statement for if the worker count is larger than the count of the remaining logs
     			if (index+worker_number >= lines.size()) {
     				for (int i = 0; i < lines.size()-index; i++) {
     					workers[i] = new Worker(lines.get(i+index),vulnerabilityPattern, this);
@@ -61,7 +63,12 @@ public class MasterThread extends Thread {
         				workers[i].join();
         			}
     			}
-    			semaphoreDefinition.signalMaster.Subtract(2);
+    			
+    			//This function removes the number of workers from the semaphore at once
+    			//The master thread may only continue when all the workers are finished
+    			semaphoreDefinition.signalMaster.Subtract(worker_number);
+    			
+    			//Wait for workers to finish
     			semaphoreDefinition.signalMaster.P();
 
     			// Update averages, we need to increment workers by 2 when approx_Avg - Avg > 0.2
@@ -79,6 +86,7 @@ public class MasterThread extends Thread {
 
     				System.out.println("Increasing workers to: " + worker_number);
     		}
+    			//Release the lock again so that the semaphore is back at 1
     			semaphoreDefinition.signalMaster.V();
         }
     		
