@@ -1,4 +1,4 @@
-package PA1;
+package Solution;
 
 import java.io.*;
 import java.util.*;

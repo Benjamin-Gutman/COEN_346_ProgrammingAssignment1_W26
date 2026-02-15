@@ -1,6 +1,6 @@
-package PA1;
+package Solution;
 
-public class PA1{
+public class Solution{
 	//Initialize the main function
 	public static void main(String[] args) {
 		

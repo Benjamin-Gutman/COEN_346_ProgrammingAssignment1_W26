@@ -1,4 +1,4 @@
-package PA1;
+package Solution;
 
 //This code was taken from the Semaphore example shown in the tutorial 4 slides and executed in Lab2
 

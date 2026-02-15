@@ -1,29 +1,11 @@
-package question;
+package Solution;
 
-class worker{
-	
-	private int log_index;
-	private LevenshteinDistance lev = new LevenshteinDistance();
-	
-	public worker() {
-		log_index = 0;
-	}
-	
-	public worker(int i) {
-		log_index = i;
-	}
-	
-}
+/*
+ * The Levenshtein distance is a number that tells you how different two strings are. The higher the number, the more different the two strings are.
+ * For more information: https://en.wikipedia.org/wiki/Levenshtein_distance
+ */
 
-
-
-
-
-
-
-
-
-class LevenshteinDistance {
+public class LevenshteinDistance {
 
     public double Change_Ratio = 0.0;           // attribute used to measure the change percentage.
     public boolean acceptable_change = false;   // attribute used to measure acceptable change.
@@ -40,7 +22,9 @@ class LevenshteinDistance {
         this.Change_Ratio = 1- Double.valueOf(i)/Double.valueOf(length);
         // if the change ratio is greater than 5% (assignment requirements),
         // then it is acceptable change to increment the number of Vulnerabilities.
-        this.acceptable_change = (this.Change_Ratio > 0.05)? true: false;
+        
+        //****This line was changed from >0.05 to >=0.95******
+        this.acceptable_change = (this.Change_Ratio >= 0.95)? true: false;
     }
 
     // If the characters are not equal, then the cost of distance by one.
@@ -52,7 +36,8 @@ class LevenshteinDistance {
     // The main function to run the Levenshtein Distance algorithm
     public int Calculate(String str1, String str2)
     {
-        int[][] dp = new int[str1.length() + 1][str1.length() + 1];
+
+        int[][] dp = new int[str1.length() + 1][str2.length() + 1];
 
         for (int i = 0; i <= str1.length(); i++) {
             for (int j = 0; j <= str2.length(); j++) {

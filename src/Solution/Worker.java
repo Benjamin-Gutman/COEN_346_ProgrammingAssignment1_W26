@@ -1,4 +1,4 @@
-package PA1;
+package Solution;
 
 
 //This class solely exists to define the semaphores used throughout the code
